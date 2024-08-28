@@ -5,9 +5,9 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import fs from 'fs';
 import solanaWeb3 from '@solana/web3.js'
+import client from "./dbConfig.js";
 
 import bs58 from 'bs58'
-import { log } from "console";
 
 const app = express();
 
@@ -27,6 +27,21 @@ app.post('/solkeys', (req, res) => {
     fs.writeFileSync('./seed/seed.txt', '');
     fs.writeFileSync('./seed/seed.txt', data); 
     res.status(200).json({ message: 'Data received successfully!' });
+})
+
+app.post('/saveKeys', async(req, res) => {
+    const data = req.body.data;
+    console.log("Keys Save Data is: ", data);  
+    try {
+        const insertQuery = `INSERT INTO solWallet (publicKey, privateKey) VALUES ($1, $2);`
+        const values = [data.publicKey, data.privateKey];
+
+        await client.query(insertQuery, values);
+    } catch (error) {
+        console.error("Error saving keys:", error.stack);
+        res.status(500).json({ message: "Error saving keys" });
+    }
+    res.status(200).json({ message: "Keys saved successfully" });  
 })
 
 const data = fs.readFileSync("./seed/seed.txt");

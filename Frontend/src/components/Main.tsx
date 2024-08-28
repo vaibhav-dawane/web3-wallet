@@ -18,8 +18,6 @@ const Main:React.FC = () => {
 
     const [seedPhrase, setSeedPhrase] = useState('');
 
-    
-
     const generatePhrase = async () => {
         try {
             const response = await fetch("http://localhost:3000/");
@@ -38,10 +36,9 @@ const Main:React.FC = () => {
     
     const solWallet = async() => {
         console.log(seedPhrase);
-        
         try {
             await axios.post("http://localhost:3000/solkeys", {data: seedPhrase});
-            console.log('Success');
+            // console.log('Success');
         } catch (error) {
             console.error('Error:', error);
         }
@@ -98,8 +95,8 @@ const Main:React.FC = () => {
                             }
                             <div className='flex justify-end absolute bottom-2 right-4'>
                                 <button onClick={copyPhrase} className='text-sm p-1 rounded-md cursor-pointer hover:bg-gray-400 hover:bg-opacity-40'>Copy Phrase</button>  
+                                <ToastContainer />
                             </div>
-                            <ToastContainer />
                             
                         </div>
                     </div>
@@ -129,7 +126,7 @@ const Main:React.FC = () => {
                 <div ref={targetRef} className='flex justify-center select-none'>
                     <div className='w-[700px] mt-10 shadow-[0_0_0_0.5px_rgba(128,128,128,1)] p-4 rounded-lg'>
                         <div className='flex justify-center'>
-                            <div className='p-2 border border-purple-500 rounded-md mx-4 hover:scale-105 cursor-pointer hover:bg-gray-400 hover:bg-opacity-15 text-white font-semibold'>Solana Wallet</div>
+                            <div className='p-2 border border-purple-500 rounded-md mx-4 hover:scale-105 cursor-pointer hover:bg-purple-400 hover:bg-opacity-15 text-white font-semibold'>Solana Wallet</div>
                         </div>
                         <div className='w-full'>
                                 <SolanaKeys />
