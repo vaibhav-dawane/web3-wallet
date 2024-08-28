@@ -17,11 +17,14 @@ app.use(cookieParser()); // To parse cookies
 
 const PORT = 3000;
 
+// to sent seed phrase to frontend
 app.get('/', (req, res) => {
     const mnemonic = bip39.generateMnemonic();
     res.json({seedphrase: mnemonic});
 })
 
+
+// to get the seed phrase from frontend and store it in file
 app.post('/solkeys', (req, res) => {
     const data = req.body.data;
     fs.writeFileSync('./seed/seed.txt', '');
@@ -29,6 +32,7 @@ app.post('/solkeys', (req, res) => {
     res.status(200).json({ message: 'Data received successfully!' });
 })
 
+// to get the solana keys from frontend and store them into database
 app.post('/saveKeys', async(req, res) => {
     const data = req.body.data;
     console.log("Keys Save Data is: ", data);  

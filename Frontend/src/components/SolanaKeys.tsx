@@ -16,8 +16,9 @@ const SolanaKeys = () => {
         setShowText(!showText);
     }
 
-
     const [solKeys, setSolKeys] = useState({publicKey: '', privateKey: ''});
+    
+    // get keys from backend to frontend
     const getKeys = async() => {
         try {
             const response = await fetch("http://localhost:3000/solana-keypair");
@@ -83,6 +84,7 @@ const SolanaKeys = () => {
         }
     }
 
+    // to save keys at backend database
     const saveKeys = async () => {
         try {
             await axios.post("http://localhost:3000/saveKeys", {data: solKeys});    
