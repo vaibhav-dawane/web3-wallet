@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios'
 
-const SolanaKeys = () => {
+const EtheriumKeys = () => {
 
     const [showPrivateKey, setShowPrivateKey] = useState(false);
     const [showText, setShowText] = useState(false);
@@ -16,7 +16,7 @@ const SolanaKeys = () => {
         setShowText(!showText);
     }
 
-    const [solKeys, setSolKeys] = useState({publicKey: '', privateKey: ''});
+    const [ethKeys, setEthKeys] = useState({publicKey: '', privateKey: ''});
     
     // get keys from backend to frontend
     const getKeys = async() => {
@@ -25,14 +25,14 @@ const SolanaKeys = () => {
             const data = await response.json()
             const keyPairs = data.SolanaKeyPair;
             // console.log(keyPairs);  
-            setSolKeys({publicKey:keyPairs.publicKey, privateKey:keyPairs.privateKey});
+            setEthKeys({publicKey:keyPairs.publicKey, privateKey:keyPairs.privateKey});
         } catch (error) {
             console.error('Error:', error);
         }
     }
 
     let hiddenText = '';
-    const keyLength = solKeys.privateKey?.length;
+    const keyLength = ethKeys.privateKey?.length;
     for(let i = 0; i < keyLength; i++)
     {
         hiddenText += '••';
@@ -43,9 +43,9 @@ const SolanaKeys = () => {
     }, []);
 
     const copyPublicKey = () => {
-        if(solKeys.publicKey)
+        if(ethKeys.publicKey)
         {
-            navigator.clipboard.writeText(solKeys.publicKey)
+            navigator.clipboard.writeText(ethKeys.publicKey)
                 .then(() => {
                     toast.success('Public Key copied to clipboard!', {
                         position: "bottom-right",
@@ -58,15 +58,15 @@ const SolanaKeys = () => {
                     });
                 })
                 .catch((error) => {
-                    console.error('Error copying seed phrase:', error);
+                    console.error('Error copying Public Key:', error);
                 });
         }
     }
 
     const copyPrivateKey = () => {
-        if(solKeys.privateKey)
+        if(ethKeys.privateKey)
         {
-            navigator.clipboard.writeText(solKeys.privateKey)
+            navigator.clipboard.writeText(ethKeys.privateKey)
                 .then(() => {
                     toast.success('Private Key copied to clipboard!', {
                         position: "bottom-right",
@@ -79,7 +79,7 @@ const SolanaKeys = () => {
                     });
                 })
                 .catch((error) => {
-                    console.error('Error copying seed phrase:', error);
+                    console.error('Error copying Private Key:', error);
                 });
         }
     }
@@ -87,7 +87,7 @@ const SolanaKeys = () => {
     // to save keys at backend database
     const saveKeys = async () => {
         try {
-            await axios.post("http://localhost:3000/saveSolKeys", {data: solKeys});    
+            await axios.post("http://localhost:3000/saveKeys", {data: ethKeys});    
             console.log("Data Sent Successfully");            
             toast.success('Keys Saved Successfully', {
                 position: "bottom-right",
@@ -111,7 +111,7 @@ const SolanaKeys = () => {
                 <h4 className='text-sm ml-1 mb-1 select-none'>Public Address</h4>
                 <div className="input input-bordered w-full cursor-text flex justify-end items-center overflow-auto whitespace-nowrap">
                     <div className="flex items-center overflow-hidden w-full">
-                        <input type="text" className='bg-transparent text-white flex-grow pr-2 py2 hover:outline-none w-full' placeholder="hello" readOnly value={solKeys.publicKey}/>
+                        <input type="text" className='bg-transparent text-white flex-grow pr-2 py2 hover:outline-none w-full' placeholder="hello" readOnly value={ethKeys.publicKey}/>
                     </div>
                     <div className="ml-auto">
                         <FontAwesomeIcon className="cursor-pointer" icon={faCopy} onClick={copyPublicKey} />
@@ -123,7 +123,7 @@ const SolanaKeys = () => {
                 <div className="input input-bordered w-full cursor-text flex justify-end items-center overflow-x-auto whitespace-nowrap"> 
                     <div className="flex items-center overflow-hidden w-full">
                         <input type="text" className='bg-transparent text-white flex-grow pr-3 py2 hover:outline-none w-full' placeholder="hello" readOnly value={
-                            showText ? solKeys.privateKey : hiddenText
+                            showText ? ethKeys.privateKey : hiddenText
                             }/>
                     </div>
                     <div className="ml-auto flex space-x-3">
@@ -143,11 +143,11 @@ const SolanaKeys = () => {
             </div>
             
             <div className="mt-6 flex justify-center">
-                <button onClick={saveKeys} className="p-2 px-4 border border-purple-500 rounded-md mx-4 hover:scale-105 cursor-pointer hover:bg-purple-400 hover:bg-opacity-15 text-white font-semibold">Save Keys</button>
+                <button onClick={saveKeys} className="p-2 px-4 border border-yellow-700 rounded-md mx-4 hover:scale-105 cursor-pointer hover:bg-yellow-200 hover:bg-opacity-15 text-white font-semibold">Save Keys</button>
                 <ToastContainer />
             </div>
 
         </div>
     );
 }
-export default SolanaKeys
+export default EtheriumKeys

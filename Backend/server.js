@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 
 
 // to get the seed phrase from frontend and store it in file
-app.post('/solkeys', (req, res) => {
+app.post('/seed', (req, res) => {
     const data = req.body.data;
     fs.writeFileSync('./seed/seed.txt', '');
     fs.writeFileSync('./seed/seed.txt', data); 
@@ -33,7 +33,7 @@ app.post('/solkeys', (req, res) => {
 })
 
 // to get the solana keys from frontend and store them into database
-app.post('/saveKeys', async(req, res) => {
+app.post('/saveSolKeys', async(req, res) => {
     const data = req.body.data;
     console.log("Keys Save Data is: ", data);  
     try {
