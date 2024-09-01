@@ -98,6 +98,11 @@ const SolanaKeys = () => {
                 draggable: true,
                 progress: undefined,
             });
+
+            setTimeout(() => {
+                console.log("Refreshing the page...");
+                window.location.reload();
+            }, 4000);
         } catch (error) {
             console.error('Error:', error);
         }

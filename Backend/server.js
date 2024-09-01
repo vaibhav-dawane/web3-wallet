@@ -8,6 +8,8 @@ import solanaWeb3 from '@solana/web3.js'
 import client from "./dbConfig.js";
 
 import bs58 from 'bs58'
+import { getSolKeyPairs } from "./solKeys.js";
+import { getEthKeyPairs } from "./ethKeys.js";
 
 const app = express();
 
@@ -75,6 +77,18 @@ app.get('/solana-keypair', (req, res) => {
 app.get('/get-data', (req, res) => {
     res.json({ data: data });
 });
+
+app.get('/getSolWalletKeys', async (req, res) => {
+    const solKeyPairs = await getSolKeyPairs();
+    // console.log(solKeyPairs);
+    res.json({solKeyPairs})
+})
+
+// const ethKeyPairs = await getEthKeyPairs();
+
+// app.get('/getEthWalletKeys', (req, res) => {
+
+// })
 
 app.listen(PORT, () => {
     console.log(`Server Listening At: ${PORT}`);  
