@@ -4,7 +4,7 @@ const { Client } = pkg;
 // defining parameters to connect with postgres
 const client = new Client({
     user:  process.env.POSTGRES_USER || 'postgres',
-    host: process.env.POSTGRES_HOST || 'pg-db',
+    host: process.env.POSTGRES_HOST || 'postgres',
     database: process.env.POSTGRES_DB || 'newdb',
     password: process.env.POSTGRES_PASSWORD || 'vaibhav',
     port: process.env.POSTGRES_PORT || 5432

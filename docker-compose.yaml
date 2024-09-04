@@ -13,15 +13,17 @@ services:
       - ./init-scripts:/docker-entrypoint-initdb.d
     networks:
       - my-network
+    ports:
+      - "5432:5432"
 
   backend:
-    image: vaibhavdawane/backend-web3
+    build: ./Backend/
     container_name: my-backend
     environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
       POSTGRES_DB: mydatabase
     networks:
       - my-network
