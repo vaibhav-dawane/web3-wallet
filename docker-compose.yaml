@@ -17,7 +17,7 @@ services:
       - "5432:5432"
 
   backend:
-    build: ./Backend/
+    image: vaibhavdawane/backend-web3
     container_name: my-backend
     environment:
       POSTGRES_USER: myuser
