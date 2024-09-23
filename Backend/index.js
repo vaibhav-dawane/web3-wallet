@@ -9,7 +9,15 @@ import client from "./dbConfig.js";
 
 import bs58 from 'bs58'
 import { getSolKeyPairs } from "./solKeys.js";
-import { getEthKeyPairs } from "./ethKeys.js";
+// import { getEthKeyPairs } from "./ethKeys.js";
+
+client.query('CREATE TABLE IF NOT EXISTS solWallet(id SERIAL PRIMARY KEY, publicKey VARCHAR(250), privateKey VARCHAR(250));', (err, res) => {
+    if (err) {
+      console.error('Query error', err.stack);
+    } else {
+      console.log('Table Created');
+    }
+});
 
 const app = express();
 
@@ -52,21 +60,16 @@ app.post('/saveSolKeys', async(req, res) => {
 
 const data = fs.readFileSync("./seed/seed.txt");
 const seed = data.toString();
-// console.log(seed);
 
 // seed phrase is converted to seed, seed is a binary representation that can be used to derive keys
 const seedBuffer = bip39.mnemonicToSeedSync(seed).slice(0, 32);
-// console.log(seedBuffer);
 
 const keypair = solanaWeb3.Keypair.fromSeed(seedBuffer);
-// console.log("Key Pair is: ", keypair);
 
 // Get the public key as a string
 const publicKey = keypair.publicKey.toString();
-// console.log("Public Key is: ", publicKey);
 
 const privateKey = bs58.encode(keypair.secretKey);
-// console.log("Private key: ", privateKey);
 
 const SolanaKeyPair = {publicKey, privateKey};
 
@@ -80,7 +83,6 @@ app.get('/get-data', (req, res) => {
 
 app.get('/getSolWalletKeys', async (req, res) => {
     const solKeyPairs = await getSolKeyPairs();
-    // console.log(solKeyPairs);
     res.json({solKeyPairs})
 })
 

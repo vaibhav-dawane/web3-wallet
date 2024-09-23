@@ -86,6 +86,7 @@ const SolanaKeys = () => {
 
     // to save keys at backend database
     const saveKeys = async () => {
+        console.log("Save Keys button Pressed");
         try {
             await axios.post("http://localhost:3000/saveSolKeys", {data: solKeys});    
             console.log("Data Sent Successfully");            

@@ -2,7 +2,7 @@ import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 interface SolWallet {
   id: number;
@@ -115,7 +115,7 @@ const AllWallets:React.FC = () => {
           {isSolOpen &&
           <div className="w-full border border-white mt-6 rounded">
             {
-              solData.map((item, index) => (
+              solData?.map((item, index) => (
                 <div className="mt-4 mx-4 border border-gray-500 px-4 pb-4 mb-4 rounded-sm" key={item.id}>
                   <div className='mt-4'>
                       <h4 className='text-sm ml-1 mb-1 select-none'>Public Address</h4>
