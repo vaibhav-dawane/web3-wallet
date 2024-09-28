@@ -89,7 +89,7 @@ const SolanaKeys = () => {
         console.log("Save Keys button Pressed");
         try {
             await axios.post("http://localhost:3000/saveSolKeys", {data: solKeys});    
-            console.log("Data Sent Successfully");            
+            console.log("Data Sent Successfully", solKeys);            
             toast.success('Keys Saved Successfully', {
                 position: "bottom-right",
                 autoClose: 3000,

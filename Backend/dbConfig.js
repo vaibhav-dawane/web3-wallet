@@ -1,13 +1,19 @@
 import pkg from 'pg';  // Import the entire 'pg' package
 const { Client } = pkg;
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 // defining parameters to connect with postgres
 const client = new Client({
-    user: 'vaibhav',
-    host: 'localhost',
-    database: 'vaibhav',
-    password: 'vaibhav',
-    port: 5432,
+    user: process.env.USER,
+    host: process.env.HOST,
+    database: process.env.DATABASE,
+    password: process.env.PASSWORD,
+    port: process.env.PORT,
+    ssl: {
+      rejectUnauthorized: false, // Necessary for AWS RDS SSL connection
+    },
 })
 
 client.connect()

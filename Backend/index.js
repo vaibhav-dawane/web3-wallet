@@ -9,7 +9,6 @@ import client from "./dbConfig.js";
 
 import bs58 from 'bs58'
 import { getSolKeyPairs } from "./solKeys.js";
-// import { getEthKeyPairs } from "./ethKeys.js";
 
 client.query('CREATE TABLE IF NOT EXISTS solWallet(id SERIAL PRIMARY KEY, publicKey VARCHAR(250), privateKey VARCHAR(250));', (err, res) => {
     if (err) {
@@ -23,7 +22,6 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
-app.use(cookieParser()); // To parse cookies
 
 const PORT = 3000;
 
@@ -38,9 +36,31 @@ app.get('/', (req, res) => {
 app.post('/seed', (req, res) => {
     const data = req.body.data;
     fs.writeFileSync('./seed/seed.txt', '');
-    fs.writeFileSync('./seed/seed.txt', data); 
-    res.status(200).json({ message: 'Data received successfully!' });
+    fs.writeFileSync('./seed/seed.txt', data);
+    res.status(200).json({ message: 'Data received successfully!'});
 })
+
+// send keys pairs to frontend
+app.get('/solana-keypair', (req, res) => {
+    // Read the current seed from the file
+    let data;
+    try {
+        data = fs.readFileSync("./seed/seed.txt").toString();
+        if (!data) throw new Error("Seed file is empty or missing");
+    } catch (error) {
+        return res.status(500).json({ message: "Failed to read seed file", error: error.message });
+    }
+
+    // Convert the seed phrase to a seed buffer
+    const seedBuffer = bip39.mnemonicToSeedSync(data).slice(0, 32);
+
+    // Generate keypair
+    const keypair = solanaWeb3.Keypair.fromSeed(seedBuffer);
+    const publicKey = keypair.publicKey.toString();
+    const privateKey = bs58.encode(keypair.secretKey);
+
+    res.json({ SolanaKeyPair: { publicKey, privateKey } });
+});
 
 // to get the solana keys from frontend and store them into database
 app.post('/saveSolKeys', async(req, res) => {
@@ -51,46 +71,17 @@ app.post('/saveSolKeys', async(req, res) => {
         const values = [data.publicKey, data.privateKey];
 
         await client.query(insertQuery, values);
+        res.status(200).json({ message: "Keys saved successfully" });  
     } catch (error) {
         console.error("Error saving keys:", error.stack);
         res.status(500).json({ message: "Error saving keys" });
     }
-    res.status(200).json({ message: "Keys saved successfully" });  
 })
-
-const data = fs.readFileSync("./seed/seed.txt");
-const seed = data.toString();
-
-// seed phrase is converted to seed, seed is a binary representation that can be used to derive keys
-const seedBuffer = bip39.mnemonicToSeedSync(seed).slice(0, 32);
-
-const keypair = solanaWeb3.Keypair.fromSeed(seedBuffer);
-
-// Get the public key as a string
-const publicKey = keypair.publicKey.toString();
-
-const privateKey = bs58.encode(keypair.secretKey);
-
-const SolanaKeyPair = {publicKey, privateKey};
-
-app.get('/solana-keypair', (req, res) => {
-    res.json({ SolanaKeyPair: SolanaKeyPair });
-})
-
-app.get('/get-data', (req, res) => {
-    res.json({ data: data });
-});
 
 app.get('/getSolWalletKeys', async (req, res) => {
     const solKeyPairs = await getSolKeyPairs();
     res.json({solKeyPairs})
 })
-
-// const ethKeyPairs = await getEthKeyPairs();
-
-// app.get('/getEthWalletKeys', (req, res) => {
-
-// })
 
 app.listen(PORT, () => {
     console.log(`Server Listening At: ${PORT}`);  
