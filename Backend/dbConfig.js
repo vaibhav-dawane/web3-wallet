@@ -6,13 +6,14 @@ dotenv.config();
 
 // defining parameters to connect with postgres
 const client = new Client({
-    user: process.env.USER,
-    host: process.env.HOST,
-    database: process.env.DATABASE,
-    password: process.env.PASSWORD,
-    port: process.env.PORT,
+    // user: process.env.USER,
+    // host: process.env.HOST,
+    // database: process.env.DATABASE,
+    // password: process.env.PASSWORD,
+    // port: process.env.PORT,
+    connectionString: process.env.CONNECTION_STRING,
     ssl: {
-      rejectUnauthorized: false, // Necessary for AWS RDS SSL connection
+      rejectUnauthorized: false, 
     },
 })
 

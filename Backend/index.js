@@ -7,9 +7,11 @@ import fs from 'fs';
 import solanaWeb3 from '@solana/web3.js'
 import client from "./dbConfig.js";
 import {redis} from "./redis.js"
-
+import dotenv from 'dotenv'
 import bs58 from 'bs58'
 import { getSolKeyPairs } from "./solKeys.js";
+
+dotenv.config()
 
 client.query('CREATE TABLE IF NOT EXISTS solWallet(id SERIAL PRIMARY KEY, publicKey VARCHAR(250), privateKey VARCHAR(250));', (err, res) => {
     if (err) {
@@ -24,7 +26,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-const PORT = 3000;
+const PORT = process.env.APP_PORT || 3000;
 
 // to sent seed phrase to frontend
 app.get('/', (req, res) => {
