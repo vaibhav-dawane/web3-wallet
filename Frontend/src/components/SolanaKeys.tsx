@@ -21,7 +21,7 @@ const SolanaKeys = () => {
     // get keys from backend to frontend
     const getKeys = async() => {
         try {
-            const response = await fetch("http://localhost:3000/solana-keypair");
+            const response = await fetch("https://web3-wallet-7263.onrender.com/solana-keypair");
             const data = await response.json()
             const keyPairs = data.SolanaKeyPair;
             // console.log(keyPairs);  
@@ -88,7 +88,7 @@ const SolanaKeys = () => {
     const saveKeys = async () => {
         // console.log("Save Keys button Pressed");
         try {
-            await axios.post("http://localhost:3000/saveSolKeys", {data: solKeys});    
+            await axios.post("https://web3-wallet-7263.onrender.com/saveSolKeys", {data: solKeys});    
             // console.log("Data Sent Successfully", solKeys);            
             toast.success('Keys Saved Successfully', {
                 position: "bottom-right",
@@ -103,7 +103,7 @@ const SolanaKeys = () => {
             setTimeout(() => {
                 console.log("Refreshing the page...");
                 window.location.reload();
-                axios.post("http://localhost:3000/clear-redis"); //to notify your server to clear the Redis cache
+                axios.post("https://web3-wallet-7263.onrender.com/clear-redis"); //to notify your server to clear the Redis cache
             }, 4000);
         } catch (error) {
             console.error('Error:', error);

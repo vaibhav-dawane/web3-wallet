@@ -2,7 +2,7 @@ import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 interface SolWallet {
   id: number;
@@ -22,7 +22,7 @@ const AllWallets:React.FC = () => {
   const [isEthOpen, setIsEthOpen] = useState(false);
   const solTab = async () => {
     try{
-        const response = await fetch("http://localhost:3000/getSolWalletKeys");
+        const response = await fetch("https://web3-wallet-7263.onrender.com/getSolWalletKeys");
         const data: SolKeyPairsResponse = await response.json()
         setSolData(data.solKeyPairs);
         // console.log(data.solKeyPairs);

@@ -22,7 +22,7 @@ const Main:React.FC = () => {
 
     const generatePhrase = async () => {
         try {
-            const response = await fetch("http://localhost:3000/");
+            const response = await fetch("https://web3-wallet-7263.onrender.com/");
             const data = await response.json()
             setSeedPhrase(data.seedphrase);
         } catch (error) {
@@ -40,7 +40,7 @@ const Main:React.FC = () => {
     const solWallet = async() => {
         // console.log(seedPhrase);
         try {
-            await axios.post("http://localhost:3000/seed", {data: seedPhrase});
+            await axios.post("https://web3-wallet-7263.onrender.com/seed", {data: seedPhrase});
             // console.log('Success');
         } catch (error) {
             console.error('Error:', error);
@@ -51,7 +51,7 @@ const Main:React.FC = () => {
     const ethWallet = async() => {
         console.log(seedPhrase);
         try {
-            await axios.post("http://localhost:3000/seed", {data: seedPhrase});
+            await axios.post("https://web3-wallet-7263.onrender.com/seed", {data: seedPhrase});
             // console.log('Success');
         } catch (error) {
             console.error('Error:', error);

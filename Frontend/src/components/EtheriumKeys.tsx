@@ -21,7 +21,7 @@ const EtheriumKeys = () => {
     // get keys from backend to frontend
     const getKeys = async() => {
         try {
-            const response = await fetch("http://localhost:3000/solana-keypair");
+            const response = await fetch("https://web3-wallet-7263.onrender.com/solana-keypair");
             const data = await response.json()
             const keyPairs = data.SolanaKeyPair;
             // console.log(keyPairs);  
@@ -87,7 +87,7 @@ const EtheriumKeys = () => {
     // to save keys at backend database
     const saveKeys = async () => {
         try {
-            await axios.post("http://localhost:3000/saveKeys", {data: ethKeys});    
+            await axios.post("https://web3-wallet-7263.onrender.com/saveKeys", {data: ethKeys});    
             // console.log("Data Sent Successfully");            
             toast.success('Keys Saved Successfully', {
                 position: "bottom-right",
