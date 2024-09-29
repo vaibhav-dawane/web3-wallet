@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import fs from 'fs';
 import solanaWeb3 from '@solana/web3.js'
 import client from "./dbConfig.js";
+import {redis} from "./redis.js"
 
 import bs58 from 'bs58'
 import { getSolKeyPairs } from "./solKeys.js";
@@ -33,24 +34,29 @@ app.get('/', (req, res) => {
 
 
 // to get the seed phrase from frontend and store it in file
-app.post('/seed', (req, res) => {
+app.post('/seed', async (req, res) => {
     const data = req.body.data;
-    fs.writeFileSync('./seed/seed.txt', '');
-    fs.writeFileSync('./seed/seed.txt', data);
+    try {
+        await redis.set("seed", data);
+        // console.log("Seed Saved in Redis");
+    } catch (error) {
+        console.log("Error Occured while saving Seed in Redis");
+    }
     res.status(200).json({ message: 'Data received successfully!'});
 })
 
 // send keys pairs to frontend
-app.get('/solana-keypair', (req, res) => {
+app.get('/solana-keypair', async (req, res) => {
     // Read the current seed from the file
     let data;
     try {
-        data = fs.readFileSync("./seed/seed.txt").toString();
+        data = await redis.get("seed");
         if (!data) throw new Error("Seed file is empty or missing");
     } catch (error) {
         return res.status(500).json({ message: "Failed to read seed file", error: error.message });
     }
 
+    // console.log(data);
     // Convert the seed phrase to a seed buffer
     const seedBuffer = bip39.mnemonicToSeedSync(data).slice(0, 32);
 
@@ -59,13 +65,15 @@ app.get('/solana-keypair', (req, res) => {
     const publicKey = keypair.publicKey.toString();
     const privateKey = bs58.encode(keypair.secretKey);
 
+    // console.log("Keypairs from Seed: ", publicKey , ", ",privateKey);
+    
     res.json({ SolanaKeyPair: { publicKey, privateKey } });
 });
 
 // to get the solana keys from frontend and store them into database
 app.post('/saveSolKeys', async(req, res) => {
     const data = req.body.data;
-    console.log("Keys Save Data is: ", data);  
+    // console.log("Keys Save Data is: ", data);  
     try {
         const insertQuery = `INSERT INTO solWallet (publicKey, privateKey) VALUES ($1, $2);`
         const values = [data.publicKey, data.privateKey];
@@ -77,6 +85,16 @@ app.post('/saveSolKeys', async(req, res) => {
         res.status(500).json({ message: "Error saving keys" });
     }
 })
+
+// listening for POST requests to the /clear-redis route, When the POST request is received from frontend, it will clear redis
+app.post('/clear-redis', (req, res) => {
+    redis.flushall((err, succeeded) => {
+        if (err) {
+            return res.status(500).send('Error clearing Redis');
+        }
+        res.status(200).send('Redis cache cleared');
+    });
+});
 
 app.get('/getSolWalletKeys', async (req, res) => {
     const solKeyPairs = await getSolKeyPairs();

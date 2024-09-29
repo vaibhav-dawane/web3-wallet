@@ -86,10 +86,10 @@ const SolanaKeys = () => {
 
     // to save keys at backend database
     const saveKeys = async () => {
-        console.log("Save Keys button Pressed");
+        // console.log("Save Keys button Pressed");
         try {
             await axios.post("http://localhost:3000/saveSolKeys", {data: solKeys});    
-            console.log("Data Sent Successfully", solKeys);            
+            // console.log("Data Sent Successfully", solKeys);            
             toast.success('Keys Saved Successfully', {
                 position: "bottom-right",
                 autoClose: 3000,
@@ -103,6 +103,7 @@ const SolanaKeys = () => {
             setTimeout(() => {
                 console.log("Refreshing the page...");
                 window.location.reload();
+                axios.post("http://localhost:3000/clear-redis"); //to notify your server to clear the Redis cache
             }, 4000);
         } catch (error) {
             console.error('Error:', error);
@@ -117,7 +118,7 @@ const SolanaKeys = () => {
                 <h4 className='text-sm ml-1 mb-1 select-none'>Public Address</h4>
                 <div className="input input-bordered w-full cursor-text flex justify-end items-center overflow-auto whitespace-nowrap">
                     <div className="flex items-center overflow-hidden w-full">
-                        <input type="text" className='bg-transparent text-white flex-grow pr-2 py2 hover:outline-none w-full' placeholder="hello" readOnly value={solKeys.publicKey}/>
+                        <input type="text" className='bg-transparent text-white flex-grow pr-2 py2 hover:outline-none w-full' placeholder="" readOnly value={solKeys.publicKey}/>
                     </div>
                     <div className="ml-auto">
                         <FontAwesomeIcon className="cursor-pointer" icon={faCopy} onClick={copyPublicKey} />
@@ -128,7 +129,7 @@ const SolanaKeys = () => {
                 <h4 className='text-sm ml-1 mb-1 select-none'>Private Address</h4>
                 <div className="input input-bordered w-full cursor-text flex justify-end items-center overflow-x-auto whitespace-nowrap"> 
                     <div className="flex items-center overflow-hidden w-full">
-                        <input type="text" className='bg-transparent text-white flex-grow pr-3 py2 hover:outline-none w-full' placeholder="hello" readOnly value={
+                        <input type="text" className='bg-transparent text-white flex-grow pr-3 py2 hover:outline-none w-full' placeholder="" readOnly value={
                             showText ? solKeys.privateKey : hiddenText
                             }/>
                     </div>

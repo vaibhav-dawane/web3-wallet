@@ -38,7 +38,7 @@ const Main:React.FC = () => {
     const targetRef = useRef<HTMLDivElement>(null);
     
     const solWallet = async() => {
-        console.log(seedPhrase);
+        // console.log(seedPhrase);
         try {
             await axios.post("http://localhost:3000/seed", {data: seedPhrase});
             // console.log('Success');

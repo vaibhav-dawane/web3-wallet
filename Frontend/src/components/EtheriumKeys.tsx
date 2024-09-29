@@ -88,7 +88,7 @@ const EtheriumKeys = () => {
     const saveKeys = async () => {
         try {
             await axios.post("http://localhost:3000/saveKeys", {data: ethKeys});    
-            console.log("Data Sent Successfully");            
+            // console.log("Data Sent Successfully");            
             toast.success('Keys Saved Successfully', {
                 position: "bottom-right",
                 autoClose: 3000,
