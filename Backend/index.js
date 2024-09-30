@@ -11,6 +11,7 @@ import dotenv from 'dotenv'
 import bs58 from 'bs58'
 import { getSolKeyPairs } from "./solKeys.js";
 import { getEthKeyPairs } from "./ethKeys.js";
+import {ethers} from "ethers";
 
 dotenv.config()
 
