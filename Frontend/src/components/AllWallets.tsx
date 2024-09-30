@@ -118,6 +118,48 @@ const AllWallets:React.FC = () => {
     }
   }
 
+  const copyEthPublicKey = (index:number) => {
+    if(ethData[index])
+    {
+        navigator.clipboard.writeText(ethData[index].publickey)
+            .then(() => {
+                toast.success('Public Key copied to clipboard!', {
+                    position: "bottom-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            })
+            .catch((error) => {
+                console.error('Error copying seed phrase:', error);
+            });
+    }
+  }
+
+  const copyEthPrivateKey = (index:number) => {
+    if(ethData[index])
+    {
+        navigator.clipboard.writeText(ethData[index].privatekey)
+            .then(() => {
+                toast.success('Private Key copied to clipboard!', {
+                    position: "bottom-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            })
+            .catch((error) => {
+                console.error('Error copying seed phrase:', error);
+            });
+    }
+  }
+
   const  hiddenText = '•••'.repeat(32);
 
   return (
@@ -190,7 +232,7 @@ const AllWallets:React.FC = () => {
                             <input type="text" className='bg-transparent text-white flex-grow pr-2 hover:outline-none w-full text-[14px]' readOnly value={item.publickey}/>
                         </div>
                         <div className="ml-auto">
-                            <FontAwesomeIcon className="cursor-pointer" icon={faCopy} onClick={() => copyPublicKey(index)} />
+                            <FontAwesomeIcon className="cursor-pointer" icon={faCopy} onClick={() => copyEthPublicKey(index)} />
                         </div>
                     </div>
                 </div>
@@ -213,7 +255,7 @@ const AllWallets:React.FC = () => {
                                     )
                                 }
                             </div>
-                            <FontAwesomeIcon className="cursor-pointer" icon={faCopy} onClick={() => copyPrivateKey(index)}/>
+                            <FontAwesomeIcon className="cursor-pointer" icon={faCopy} onClick={() => copyEthPrivateKey(index)}/>
                         </div>
                     </div>  
                 </div>

@@ -64,7 +64,10 @@ const Main:React.FC = () => {
         if (showSolWallet) {
             targetRef.current?.scrollIntoView({ behavior: 'smooth' });
         }
-    }, [showSolWallet]);
+        if (showEthWallet) {
+            targetRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [showSolWallet, showEthWallet]);
 
     const copyPhrase = () => {
         if(seedPhrase)
