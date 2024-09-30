@@ -10,6 +10,7 @@ import {redis} from "./redis.js"
 import dotenv from 'dotenv'
 import bs58 from 'bs58'
 import { getSolKeyPairs } from "./solKeys.js";
+import { getEthKeyPairs } from "./ethKeys.js";
 
 dotenv.config()
 
@@ -17,7 +18,15 @@ client.query('CREATE TABLE IF NOT EXISTS solWallet(id SERIAL PRIMARY KEY, public
     if (err) {
       console.error('Query error', err.stack);
     } else {
-      console.log('Table Created');
+      console.log('Sol Table Created');
+    }
+});
+
+client.query('CREATE TABLE IF NOT EXISTS ethWallet(id SERIAL PRIMARY KEY, publicKey VARCHAR(250), privateKey VARCHAR(250));', (err, res) => {
+    if (err) {
+      console.error('Query error', err.stack);
+    } else {
+      console.log('Eth Table Created');
     }
 });
 
@@ -72,12 +81,57 @@ app.get('/solana-keypair', async (req, res) => {
     res.json({ SolanaKeyPair: { publicKey, privateKey } });
 });
 
+// send keys pairs to frontend
+app.get('/eth-keypair', async (req, res) => {
+    // Read the current seed from the file
+    let data;
+    try {
+        data = await redis.get("seed");
+        if (!data) throw new Error("Seed file is empty or missing");
+    } catch (error) {
+        return res.status(500).json({ message: "Failed to read seed file", error: error.message });
+    }
+
+    const mnemonicInstance = ethers.Mnemonic.fromPhrase(data);
+
+    // Derive the first Ethereum wallet from the mnemonic
+    const wallet = ethers.Wallet.fromPhrase(mnemonicInstance.phrase);
+
+    console.log("Address:", wallet.address);
+    console.log("Public Key:", wallet.publicKey);
+    console.log("Private Key:", wallet.privateKey);
+
+    const publicKey = wallet.publicKey;
+    const privateKey = wallet.privateKey;
+
+    // console.log("Keypairs from Seed: ", publicKey , ", ",privateKey);
+    
+    res.json({ EtheriumKeyPair: { publicKey, privateKey } });
+});
+
 // to get the solana keys from frontend and store them into database
 app.post('/saveSolKeys', async(req, res) => {
     const data = req.body.data;
     // console.log("Keys Save Data is: ", data);  
     try {
         const insertQuery = `INSERT INTO solWallet (publicKey, privateKey) VALUES ($1, $2);`
+        const values = [data.publicKey, data.privateKey];
+
+        await client.query(insertQuery, values);
+        res.status(200).json({ message: "Keys saved successfully" });  
+    } catch (error) {
+        console.error("Error saving keys:", error.stack);
+        res.status(500).json({ message: "Error saving keys" });
+    }
+})
+
+
+// to get the eth keys from frontend and store them into database
+app.post('/saveEthKeys', async(req, res) => {
+    const data = req.body.data;
+    // console.log("Keys Save Data is: ", data);  
+    try {
+        const insertQuery = `INSERT INTO ethWallet (publicKey, privateKey) VALUES ($1, $2);`
         const values = [data.publicKey, data.privateKey];
 
         await client.query(insertQuery, values);
@@ -100,7 +154,12 @@ app.post('/clear-redis', (req, res) => {
 
 app.get('/getSolWalletKeys', async (req, res) => {
     const solKeyPairs = await getSolKeyPairs();
-    res.json({solKeyPairs})
+    res.json({solKeyPairs});
+})
+
+app.get('/getEthWalletKeys', async (req, res) => {
+    const ethKeyPairs = await getEthKeyPairs();
+    res.json({ethKeyPairs});
 })
 
 app.listen(PORT, () => {
